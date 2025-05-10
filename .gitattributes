@@ -1,0 +1,16 @@
+backend docker-compose.yml Dockerfile frontend README.md venv text=auto
+*.py text eol=lf
+*.js text eol=lf
+*.jsx text eol=lf
+*.ts text eol=lf
+*.tsx text eol=lf
+*.json text eol=lf
+docker-compose.yml text eol=lf
+*.yaml text eol=lf
+README.md text eol=lf
+*.sh text eol=lf
+*.css text eol=lf
+*.html text eol=lf
+*.toml text eol=lf
+*.bat text eol=crlf
+*.ps1 text eol=crlf
