@@ -1,0 +1,1 @@
+backend frontend frontend/src frontend/package.json venv .gitattributes .gitignore docker-compose.yml Dockerfile estrutura.txt README.md
