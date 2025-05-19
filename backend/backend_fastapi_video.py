@@ -15,3 +15,17 @@ def gerar_video():
     
     # Retornamos uma resposta JSON com o nome do vídeo
     return JSONResponse(content={"arquivo": nome_arquivo})
+
+from fastapi.middleware.cors import CORSMiddleware
+
+app = FastAPI()
+
+# Libera o acesso entre o frontend (Netlify) e o backend (Render)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["https://futnewsvideo.netlify.app"],  # URL do seu frontend
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+

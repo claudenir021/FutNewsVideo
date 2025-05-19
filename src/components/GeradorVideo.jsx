@@ -6,7 +6,7 @@ export default function GeradorVideo() {
   const handleClick = async () => {
     try {
       setMensagem('Gerando vídeo...');
-      const resposta = await fetch('https://futnewsvideo.onrender.com', {
+      const resposta = await fetch('https://futnewsvideo.onrender.com/gerar_video', {
         method: 'POST',
       });
 
