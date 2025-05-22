@@ -1,5 +1,4 @@
-import React from 'react';
-import GeradorVideo from './components/GeradorVideo';
+import GeradorVideo from './GeradorVideo';
 
 function App() {
   return (
@@ -9,5 +8,3 @@ function App() {
     </div>
   );
 }
-
-export default App;
