@@ -1,10 +1,9 @@
-import GeradorVideo from './GeradorVideo';
+import React from 'react';
 
-function App() {
+export default function App() {
   return (
-    <div>
-      <h1>FutNews Video</h1>
-      <GeradorVideo />
+    <div className="flex items-center justify-center min-h-screen bg-green-600 text-white text-3xl">
+      FutNewsVideo funcionando! ⚽🎥
     </div>
   );
 }

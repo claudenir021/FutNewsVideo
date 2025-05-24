@@ -2,63 +2,57 @@ import React, { useState } from 'react';
 
 export default function GeradorVideo() {
   const [mensagem, setMensagem] = useState('');
-  const [videoUrl, setVideoUrl] = useState('');
+  const [videoURL, setVideoURL] = useState('');
 
   const handleClick = async () => {
     try {
       setMensagem('Gerando vídeo...');
-      setVideoUrl('');
+      setVideoURL('');
 
       const resposta = await fetch('https://futnewsvideo.onrender.com/gerar_video', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          titulo: "Título de Exemplo",
-          texto: "Texto da notícia de futebol.",
-        }),
       });
 
       if (resposta.ok) {
         const dados = await resposta.json();
-        const urlDoVideo = `https://futnewsvideo.onrender.com/videos/${dados.arquivo}`;
-        setVideoUrl(urlDoVideo);
-        setMensagem('✅ Vídeo gerado com sucesso!');
+        const url = `https://futnewsvideo.onrender.com/videos/${dados.arquivo}`;
+        setMensagem('Vídeo gerado com sucesso!');
+        setVideoURL(url);
       } else {
-        setMensagem('❌ Erro ao gerar o vídeo.');
+        setMensagem('Erro ao gerar o vídeo.');
       }
     } catch (erro) {
-      setMensagem('❌ Erro ao conectar com o servidor.');
+      setMensagem('Erro ao conectar com o servidor.');
       console.error(erro);
     }
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
-      <h1 className="text-3xl font-bold text-gray-800 mb-6">FutNews Video</h1>
-
+    <div style={{ padding: '20px' }}>
       <button
         onClick={handleClick}
-        className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded shadow-md transition duration-300"
+        style={{
+          padding: '10px 20px',
+          fontSize: '16px',
+          backgroundColor: '#1E90FF',
+          color: 'white',
+          border: 'none',
+          borderRadius: '8px',
+          cursor: 'pointer',
+        }}
       >
         Gerar Vídeo
       </button>
 
-      {mensagem && (
-        <p className="mt-4 text-gray-700 text-lg">{mensagem}</p>
-      )}
+      {mensagem && <p style={{ marginTop: '15px' }}>{mensagem}</p>}
 
-      {videoUrl && (
+      {videoURL && (
         <video
-          width="720"
-          height="480"
+          src={videoURL}
           controls
-          className="mt-6 border-2 border-gray-300 rounded"
-        >
-          <source src={videoUrl} type="video/mp4" />
-          Seu navegador não suporta vídeo HTML5.
-        </video>
+          autoPlay
+          style={{ marginTop: '20px', maxWidth: '100%' }}
+        />
       )}
     </div>
   );
