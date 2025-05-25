@@ -2,5 +2,7 @@ fastapi
 uvicorn
 requests
 gtts
-moviepy
+moviepy==1.0.3
 python-dotenv
+imageio==2.9.0
+imageio-ffmpeg==0.4.2
