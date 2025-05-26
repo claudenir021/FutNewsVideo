@@ -9,9 +9,25 @@ export default function App() {
     setLoading(true);
     setVideoUrl('');
     try {
-      const response = await fetch('https://futnewsvideo.onrender.com/gerar-video');
+      const response = await fetch('https://futnewsvideo.onrender.com/generate-video', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          team: 'Palmeiras',
+          title: 'Vitória no Clássico',
+          text: 'O Palmeiras venceu com um gol nos acréscimos!',
+        }),
+      });
+
       const data = await response.json();
-      setVideoUrl(data.video_url);
+      if (response.ok) {
+        // Ajuste da URL do vídeo retornado
+        setVideoUrl(`https://futnewsvideo.onrender.com/${data.video_path}`);
+      } else {
+        console.error('Erro do backend:', data.detail);
+      }
     } catch (error) {
       console.error('Erro ao gerar vídeo:', error);
     } finally {
