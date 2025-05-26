@@ -7,18 +7,22 @@ import os
 
 app = FastAPI()
 
+# ✅ Atualizamos o modelo para aceitar team, title e text
 class VideoRequest(BaseModel):
-    texto: str
+    team: str
+    title: str
+    text: str
 
-# ✅ EXTRAÍDO: Função reutilizável
-def generate_video(texto: str) -> str:
+# ✅ Atualizamos a função para usar os três campos
+def generate_video(team: str, title: str, text: str) -> str:
     timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-    nome_arquivo = f"video_{timestamp}.mp4"
+    nome_arquivo = f"{team}_{timestamp}.mp4"
     caminho_arquivo = os.path.join("videos", nome_arquivo)
 
     os.makedirs("videos", exist_ok=True)
 
-    clip_texto = TextClip("Notícia de Futebol", fontsize=70, color='white', size=(720, 480))
+    conteudo = f"{team.upper()}\n{title}\n{text}"
+    clip_texto = TextClip(conteudo, fontsize=50, color='white', size=(720, 480), method='caption')
     clip_texto = clip_texto.set_duration(5)
 
     video = CompositeVideoClip([clip_texto])
@@ -30,11 +34,12 @@ def generate_video(texto: str) -> str:
 def root():
     return {"message": "API FutNewsVideo funcionando"}
 
-@app.post("/gerar_video")
+# ✅ Endpoint atualizado para rota POST correta
+@app.post("/generate-video")
 def gerar_video_endpoint(request: VideoRequest):
     try:
-        caminho = generate_video(request.texto)
+        caminho = generate_video(request.team, request.title, request.text)
         nome_arquivo = os.path.basename(caminho)
-        return JSONResponse(content={"arquivo": nome_arquivo})
+        return JSONResponse(content={"video_path": f"videos/{nome_arquivo}"})
     except Exception as e:
-        return JSONResponse(content={"erro": str(e)}, status_code=500)
+        return JSONResponse(content={"detail": str(e)}, status_code=500)
