@@ -4,6 +4,7 @@ import capa from './assets/capa.png';
 export default function App() {
   const [videoUrl, setVideoUrl] = useState('');
   const [loading, setLoading] = useState(false);
+  const [timeSelecionado, setTimeSelecionado] = useState('Palmeiras');
 
   const gerarVideo = async () => {
     setLoading(true);
@@ -15,15 +16,14 @@ export default function App() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          team: 'Palmeiras',
-          title: 'Vitória no Clássico',
-          text: 'O Palmeiras venceu com um gol nos acréscimos!',
+          team: timeSelecionado,
+          title: `Notícia do ${timeSelecionado}`,
+          text: `${timeSelecionado} brilhou em campo hoje!`,
         }),
       });
 
       const data = await response.json();
       if (response.ok) {
-        // Ajuste da URL do vídeo retornado
         setVideoUrl(`https://futnewsvideo.onrender.com/${data.video_path}`);
       } else {
         console.error('Erro do backend:', data.detail);
@@ -43,7 +43,22 @@ export default function App() {
         className="w-full max-h-[400px] object-cover"
       />
       <h1 className="text-4xl mt-6 font-bold">FutNewsVideo ⚽🎥</h1>
-      <p className="text-xl mt-2 mb-6">As notícias do seu time, virando vídeo!</p>
+      <p className="text-xl mt-2 mb-4">As notícias do seu time, virando vídeo!</p>
+
+      {/* Dropdown de seleção de time */}
+      <select
+        value={timeSelecionado}
+        onChange={(e) => setTimeSelecionado(e.target.value)}
+        className="text-black px-4 py-2 rounded-md mb-4"
+      >
+        <option value="Palmeiras">Palmeiras</option>
+        <option value="Flamengo">Flamengo</option>
+        <option value="Corinthians">Corinthians</option>
+        <option value="São Paulo">São Paulo</option>
+        <option value="Grêmio">Grêmio</option>
+        <option value="Atlético Mineiro">Atlético Mineiro</option>
+        <option value="Internacional">Internacional</option>
+      </select>
 
       <button
         onClick={gerarVideo}
