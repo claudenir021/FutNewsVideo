@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import capa from './assets/capa.png';
+import capa from './assets/Capa.png';
 
 export default function App() {
   const [videoUrl, setVideoUrl] = useState('');
