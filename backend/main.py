@@ -1,9 +1,20 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from backend_fastapi_video import generate_video
+from backend.backend_fastapi_video import generate_video
+from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+import os
 
 app = FastAPI()
+
+# Criar pasta se não existir
+os.makedirs("videos", exist_ok=True)
+
+# Expor a pasta "videos" como rota pública
+app.mount("/videos", StaticFiles(directory="videos"), name="videos")
+
+# Resto do seu código aqui...
 
 # Habilita o CORS
 app.add_middleware(
