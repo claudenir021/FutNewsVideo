@@ -1,58 +1,51 @@
-import React, { useState } from 'react';
+import { useState } from "react";
 
-export default function GeradorVideo() {
-  const [mensagem, setMensagem] = useState('');
-  const [videoURL, setVideoURL] = useState('');
+export default function App() {
+  const [videoUrl, setVideoUrl] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleClick = async () => {
-    try {
-      setMensagem('Gerando vídeo...');
-      setVideoURL('');
+  const handleGenerateVideo = async () => {
+    setLoading(true);
+    setVideoUrl(""); // limpa o vídeo anterior
 
-      const resposta = await fetch('https://futnewsvideo.onrender.com/gerar_video', {
-        method: 'POST',
-      });
+    const response = await fetch("https://futnewsvideo.onrender.com/generate-video", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        team: "Flamengo",
+        title: "Vitória Importante",
+        text: "O Flamengo venceu o clássico com um gol nos acréscimos!",
+      }),
+    });
 
-      if (resposta.ok) {
-        const dados = await resposta.json();
-        const url = `https://futnewsvideo.onrender.com/videos/${dados.arquivo}`;
-        setMensagem('Vídeo gerado com sucesso!');
-        setVideoURL(url);
-      } else {
-        setMensagem('Erro ao gerar o vídeo.');
-      }
-    } catch (erro) {
-      setMensagem('Erro ao conectar com o servidor.');
-      console.error(erro);
+    const data = await response.json();
+
+    if (response.ok) {
+      setVideoUrl(data.video_path);
+    } else {
+      alert("Erro ao gerar vídeo: " + data.detail);
     }
+
+    setLoading(false);
   };
 
   return (
-    <div style={{ padding: '20px' }}>
-      <button
-        onClick={handleClick}
-        style={{
-          padding: '10px 20px',
-          fontSize: '16px',
-          backgroundColor: '#1E90FF',
-          color: 'white',
-          border: 'none',
-          borderRadius: '8px',
-          cursor: 'pointer',
-        }}
-      >
-        Gerar Vídeo
+    <div style={{ padding: "2rem", textAlign: "center" }}>
+      <h1>FutNewsVideo</h1>
+      <button onClick={handleGenerateVideo} disabled={loading}>
+        {loading ? "Gerando vídeo..." : "Gerar vídeo de notícia"}
       </button>
 
-      {mensagem && <p style={{ marginTop: '15px' }}>{mensagem}</p>}
-
-      {videoURL && (
-        <video
-          src={videoURL}
-          controls
-          autoPlay
-          style={{ marginTop: '20px', maxWidth: '100%' }}
-        />
+      <h2>Vídeo Gerado:</h2>
+      {videoUrl ? (
+        <video width="640" height="360" controls>
+          <source src={videoUrl} type="video/mp4" />
+          Seu navegador não suporta vídeo.
+        </video>
+      ) : (
+        !loading && <p>Nenhum vídeo gerado ainda.</p>
       )}
     </div>
   );

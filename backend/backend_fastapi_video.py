@@ -7,13 +7,11 @@ import os
 
 app = FastAPI()
 
-# ✅ Atualizamos o modelo para aceitar team, title e text
 class VideoRequest(BaseModel):
     team: str
     title: str
     text: str
 
-# ✅ Atualizamos a função para usar os três campos
 def generate_video(team: str, title: str, text: str) -> str:
     timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
     nome_arquivo = f"{team}_{timestamp}.mp4"
@@ -28,18 +26,17 @@ def generate_video(team: str, title: str, text: str) -> str:
     video = CompositeVideoClip([clip_texto])
     video.write_videofile(caminho_arquivo, fps=24)
 
-    return caminho_arquivo
+    return nome_arquivo
 
 @app.get("/")
 def root():
     return {"message": "API FutNewsVideo funcionando"}
 
-# ✅ Endpoint atualizado para rota POST correta
 @app.post("/generate-video")
 def gerar_video_endpoint(request: VideoRequest):
     try:
-        caminho = generate_video(request.team, request.title, request.text)
-        nome_arquivo = os.path.basename(caminho)
-        return JSONResponse(content={"video_path": f"videos/{nome_arquivo}"})
+        nome_arquivo = generate_video(request.team, request.title, request.text)
+        base_url = "https://futnewsvideo.onrender.com"
+        return JSONResponse(content={"video_path": f"{base_url}/videos/{nome_arquivo}"})
     except Exception as e:
         return JSONResponse(content={"detail": str(e)}, status_code=500)
