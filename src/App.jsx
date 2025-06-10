@@ -1,59 +1,67 @@
-import React from 'react';
-import { useState } from 'react';
-import './styles/index.css';
+import React, { useState } from 'react';
+import capa from './assets/capa.png';
 
-function App() {
-  const [videoPath, setVideoPath] = useState('');
+export default function App() {
+  const [videoBase64, setVideoBase64] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const gerarVideo = async () => {
-    setLoading(true);
-
     try {
+      setLoading(true);
+
       const response = await fetch('https://futnewsvideo.onrender.com/generate-video', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           team: 'Corinthians',
-          title: 'Grande Vitória',
-          text: 'O Corinthians venceu mais uma no campeonato!',
-        }),
+          title: 'Grande Vitória!',
+          text: 'O Corinthians venceu mais uma partida emocionante.'
+        })
       });
 
       const data = await response.json();
-
-      if (response.ok && data.video_path) {
-        const videoURL = `https://futnewsvideo.onrender.com/${data.video_path}`;
-        setVideoPath(videoURL);
+      if (data.video_base64) {
+        setVideoBase64(data.video_base64);
       } else {
-        alert('Erro: ' + (data.detail || 'Erro desconhecido'));
+        alert('Erro ao receber o vídeo.');
       }
     } catch (error) {
       console.error('Erro ao gerar vídeo:', error);
-      alert('Erro ao gerar vídeo');
+      alert('Ocorreu um erro ao tentar gerar o vídeo.');
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (
-    <div className="app-container">
-      <h1>FutNewsVideo</h1>
+    <div className="min-h-screen bg-green-600 flex flex-col items-center justify-center text-white px-4">
+      <img
+        src={capa}
+        alt="Imagem de Capa do FutNewsVideo"
+        className="w-full max-h-[400px] object-cover rounded-xl shadow-lg"
+      />
+      <h1 className="text-4xl mt-6 font-bold">FutNewsVideo ⚽🎥</h1>
+      <p className="text-xl mt-2 mb-4">As notícias do seu time, virando vídeo!</p>
 
-      <button onClick={gerarVideo} disabled={loading}>
-        {loading ? 'Gerando vídeo...' : 'Gerar vídeo de notícia'}
+      <button
+        onClick={gerarVideo}
+        className="bg-white text-green-600 px-6 py-2 rounded-full font-semibold shadow hover:bg-gray-200 transition"
+        disabled={loading}
+      >
+        {loading ? 'Gerando vídeo...' : 'Gerar Vídeo'}
       </button>
 
-      {videoPath && (
-        <div className="video-container">
-          <h2>Vídeo Gerado:</h2>
-          <video controls width="720" src={videoPath}></video>
-        </div>
+      {videoBase64 && (
+        <video
+          className="mt-6 rounded-lg shadow-lg max-w-full"
+          controls
+          src={`data:video/mp4;base64,${videoBase64}`}
+        >
+          Seu navegador não suporta a tag de vídeo.
+        </video>
       )}
     </div>
   );
 }
-
-export default App;

@@ -3,6 +3,7 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from moviepy.editor import TextClip, CompositeVideoClip
 import datetime
+import base64
 import os
 
 app = FastAPI()
@@ -26,7 +27,7 @@ def generate_video(team: str, title: str, text: str) -> str:
     video = CompositeVideoClip([clip_texto])
     video.write_videofile(caminho_arquivo, fps=24)
 
-    return nome_arquivo
+    return caminho_arquivo  # retorna o caminho completo
 
 @app.get("/")
 def root():
@@ -35,8 +36,14 @@ def root():
 @app.post("/generate-video")
 def gerar_video_endpoint(request: VideoRequest):
     try:
-        nome_arquivo = generate_video(request.team, request.title, request.text)
-        base_url = "https://futnewsvideo.onrender.com"
-        return JSONResponse(content={"video_path": f"{base_url}/videos/{nome_arquivo}"})
+        caminho_arquivo = generate_video(request.team, request.title, request.text)
+
+        # Lê o conteúdo do vídeo como base64
+        with open(caminho_arquivo, "rb") as f:
+            video_bytes = f.read()
+            video_base64 = base64.b64encode(video_bytes).decode("utf-8")
+
+        return JSONResponse(content={"video_base64": video_base64})
+    
     except Exception as e:
         return JSONResponse(content={"detail": str(e)}, status_code=500)

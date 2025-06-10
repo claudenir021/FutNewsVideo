@@ -23,7 +23,7 @@ export default function App() {
     const data = await response.json();
 
     if (response.ok) {
-      setVideoUrl(data.video_path);
+      setVideoUrl(`data:video/mp4;base64,${data.video_base64}`);
     } else {
       alert("Erro ao gerar vídeo: " + data.detail);
     }
